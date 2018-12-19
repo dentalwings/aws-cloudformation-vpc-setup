@@ -1,0 +1,113 @@
+Parameters:
+  VPC:
+    Description: VPC for subnet creation
+    Type: AWS::EC2::VPC::Id
+
+  PublicCIDR:
+    Description: CIDR of the Public Subnet
+    Type: String
+
+  PrivateCIDR:
+    Description: CIDR of the Public Subnet
+    Type: String
+
+  PublicIpv6CIDR:
+    Description: CIDR of the Private Subnet
+    Type: String
+
+  PrivateIpv6CIDR:
+    Description: CIDR of the Private Subnet
+    Type: String
+
+  AZ:
+    Description: Name of the Availability Zone
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  PublicRouteTableID:
+    Description: Public Route Table ID
+    Type: String
+
+  AssignIpv6AddressOnCreationLambdaCodeArn:
+    Description: AssignIPv6 Helper
+    Type: String
+
+  EgressOnlyInternetGateway:
+    Description: EgressOnlyInternetGateway for private Subnet
+    Type: String
+
+Resources:
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Ref AZ
+      CidrBlock: !Ref PublicCIDR
+      Ipv6CidrBlock: !Ref PublicIpv6CIDR
+      MapPublicIpOnLaunch: true
+      # Does not work if `MapPublicIpOnLaunch` is also set to true
+      #AssignIpv6AddressOnCreation: 'true'
+
+  # AssignIpv6AddressInvoke:
+  #   Type: Custom::SubnetModify
+  #   Properties:
+  #     ServiceToken: !Ref AssignIpv6AddressOnCreationLambdaCodeArn
+  #     theSubnet: !Ref PublicSubnet
+
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Ref AZ
+      CidrBlock: !Ref PrivateCIDR
+      Ipv6CidrBlock: !Ref PrivateIpv6CIDR
+      AssignIpv6AddressOnCreation: true
+
+  NatGatewayEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGatewayEIP.AllocationId
+      SubnetId: !Ref PublicSubnet
+
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTableID
+      SubnetId: !Ref PublicSubnet
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  DefaultPrivateRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+
+  DefaultPrivateIpv6Route:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationIpv6CidrBlock: ::/0
+      RouteTableId: !Ref PrivateRouteTable
+      EgressOnlyInternetGatewayId: !Ref EgressOnlyInternetGateway
+
+  PrivateSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref PrivateSubnet
+
+Outputs:
+  PublicSubnet:
+    Value: !Ref PublicSubnet
+  PrivateSubnet:
+    Value: !Ref PrivateSubnet
+  AvailabilityZone:
+    Value: !Ref AZ
