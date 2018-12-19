@@ -26,3 +26,27 @@ These are Cloudformation templates to create an VPC Infrastructure with:
 | `${AWS::StackName}-VPCID` | A reference to the created VPC |
 | `AZ[1-6]PrivateSubnet` | AZ[1-6] Private Subnet |
 | `AZ[1-6]PublicSubnet` | AZ[1-6] Public Subnet |
+
+## extending the VPC with more PublicSubnets
+
+This template create subnets using the `Fn::CIDR` intrinsic function to get the CIDRs for the subnets, e.g.:
+
+    PublicCIDR: !Select [11, !Cidr [!Ref VpcCIDR, 256, 8]]
+    PrivateCIDR: !Select [21, !Cidr [!Ref VpcCIDR, 256, 8]]
+    PublicIpv6CIDR: !Select [11, !Cidr [!Select [0, !GetAtt 'VPC.Ipv6CidrBlocks'], 256, 64]]
+    PrivateIpv6CIDR: !Select [21, !Cidr [!Select [0, !GetAtt 'VPC.Ipv6CidrBlocks'], 256, 64]]
+
+If you want to create additional subnets (e.g. for ElasticCacheSubnetGroups or RDSSubnetGroups) you can import the CIDRs with:
+
+    Fn::ImportValue:
+      !Sub "${NetworkStackName}-PublicCIDR"
+
+to get an SubnetCIDR select a diferent index than 11-16 and 21-26:
+
+    !Select
+      - 100
+      - !Cidr
+          - Fn::ImportValue:
+              !Sub "${NetworkStackName}-PublicIpv6CIDR"
+          - 256
+          - 64

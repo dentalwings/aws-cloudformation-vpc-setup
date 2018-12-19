@@ -44,14 +44,16 @@ Resources:
       CidrBlock: !Ref PublicCIDR
       Ipv6CidrBlock: !Ref PublicIpv6CIDR
       MapPublicIpOnLaunch: true
+      # AssignIpv6AddressOnCreation: 'true'
       # Does not work if `MapPublicIpOnLaunch` is also set to true
-      #AssignIpv6AddressOnCreation: 'true'
+      # https://forums.aws.amazon.com/thread.jspa?messageID=815051&tstart=0
 
-  # AssignIpv6AddressInvoke:
-  #   Type: Custom::SubnetModify
-  #   Properties:
-  #     ServiceToken: !Ref AssignIpv6AddressOnCreationLambdaCodeArn
-  #     theSubnet: !Ref PublicSubnet
+  # Workaround for AssignIpv6AddressOnCreation
+  AssignIpv6AddressInvoke:
+    Type: Custom::SubnetModify
+    Properties:
+      ServiceToken: !Ref AssignIpv6AddressOnCreationLambdaCodeArn
+      theSubnet: !Ref PublicSubnet
 
   PrivateSubnet:
     Type: AWS::EC2::Subnet

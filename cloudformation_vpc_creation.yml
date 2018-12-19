@@ -402,9 +402,8 @@ Resources:
     Properties:
       Handler: "index.lambda_handler"
       Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
-      Code: #import cfnresponse below required to send respose back to CFN
-        ZipFile: |
-          Fn::Sub: |
+      Code:
+        ZipFile: !Sub |
             import cfnresponse
             import boto3
 
@@ -428,6 +427,42 @@ Outputs:
     Value: !Ref VPC
     Export:
       Name: !Sub "${AWS::StackName}-VPCID"
+  VPCCIDR:
+    Description: VPC CIDR Blocks
+    Value: !Ref VpcCIDR
+    Export:
+      Name: !Sub "${AWS::StackName}-VPCCIDR"
+  VPCV6CIDR:
+    Description: VPC V6 CIDR Blocks
+    Value: !Select [0, !GetAtt 'VPC.Ipv6CidrBlocks']
+    Export:
+      Name: !Sub "${AWS::StackName}-VPCV6CIDR"
+  PublicSubnets:
+    Description: Comma seperated list of all created public PublicSubnets
+    Value: !Join
+      - ","
+      -
+        - !If [ Create1stSubnet, !GetAtt AZ1.Outputs.PublicSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create2ndSubnet, !GetAtt AZ2.Outputs.PublicSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create3rdSubnet, !GetAtt AZ3.Outputs.PublicSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create4thSubnet, !GetAtt AZ4.Outputs.PublicSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create5thSubnet, !GetAtt AZ5.Outputs.PublicSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create6thSubnet, !GetAtt AZ6.Outputs.PublicSubnet , !Ref "AWS::NoValue"]
+    Export:
+      Name: !Sub "${AWS::StackName}-PublicSubnets"
+  PrivateSubnets:
+    Description: Comma seperated list of all created public PrivateSubnets
+    Value: !Join
+      - ","
+      -
+        - !If [ Create1stSubnet, !GetAtt AZ1.Outputs.PrivateSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create2ndSubnet, !GetAtt AZ2.Outputs.PrivateSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create3rdSubnet, !GetAtt AZ3.Outputs.PrivateSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create4thSubnet, !GetAtt AZ4.Outputs.PrivateSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create5thSubnet, !GetAtt AZ5.Outputs.PrivateSubnet , !Ref "AWS::NoValue"]
+        - !If [ Create6thSubnet, !GetAtt AZ6.Outputs.PrivateSubnet , !Ref "AWS::NoValue"]
+    Export:
+      Name: !Sub "${AWS::StackName}-PrivateSubnets"
   AZ1PrivateSubnet:
     Description: AZ1 Private Subnet
     Condition: Create1stSubnet
@@ -437,7 +472,7 @@ Outputs:
   AZ1PublicSubnet:
     Description: AZ1 Public Subnet
     Condition: Create1stSubnet
-    Value: !GetAtt AZ1.Outputs.PrivateSubnet
+    Value: !GetAtt AZ1.Outputs.PublicSubnet
     Export:
       Name: !Sub "${AWS::StackName}-AZ1-PublicSubnet"
   AZ3PrivateSubnet:
@@ -449,7 +484,7 @@ Outputs:
   AZ3PublicSubnet:
     Description: AZ3 Public Subnet
     Condition: Create3rdSubnet
-    Value: !GetAtt AZ3.Outputs.PrivateSubnet
+    Value: !GetAtt AZ3.Outputs.PublicSubnet
     Export:
       Name: !Sub "${AWS::StackName}-AZ3-PublicSubnet"
   AZ4PrivateSubnet:
@@ -461,7 +496,7 @@ Outputs:
   AZ4PublicSubnet:
     Description: AZ4 Public Subnet
     Condition: Create4thSubnet
-    Value: !GetAtt AZ4.Outputs.PrivateSubnet
+    Value: !GetAtt AZ4.Outputs.PublicSubnet
     Export:
       Name: !Sub "${AWS::StackName}-AZ4-PublicSubnet"
   AZ5PrivateSubnet:
@@ -473,7 +508,7 @@ Outputs:
   AZ5PublicSubnet:
     Description: AZ5 Public Subnet
     Condition: Create5thSubnet
-    Value: !GetAtt AZ5.Outputs.PrivateSubnet
+    Value: !GetAtt AZ5.Outputs.PublicSubnet
     Export:
       Name: !Sub "${AWS::StackName}-AZ5-PublicSubnet"
   AZ6PrivateSubnet:
@@ -485,7 +520,7 @@ Outputs:
   AZ6PublicSubnet:
     Description: AZ6 Public Subnet
     Condition: Create6thSubnet
-    Value: !GetAtt AZ6.Outputs.PrivateSubnet
+    Value: !GetAtt AZ6.Outputs.PublicSubnet
     Export:
       Name: !Sub "${AWS::StackName}-AZ6-PublicSubnet"
   BastionHostIp:
