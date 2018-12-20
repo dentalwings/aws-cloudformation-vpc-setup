@@ -33,8 +33,10 @@ via CLI:
 | `${AWS::StackName}-VPCID` | A reference to the created VPC |
 | `AZ[1-6]PrivateSubnet` | AZ[1-6] Private Subnet |
 | `AZ[1-6]PublicSubnet` | AZ[1-6] Public Subnet |
+| `${AWS::StackName}-PrivateSubnets` | Comma seperated list of all created private subnets |
+| `${AWS::StackName}-PublicSubnets` | Comma seperated list of all created public subnets |
 
-## extending the VPC with more PublicSubnets
+### extending the VPC with more PublicSubnets
 
 This template create subnets using the `Fn::CIDR` intrinsic function to get the CIDRs for the subnets, e.g.:
 

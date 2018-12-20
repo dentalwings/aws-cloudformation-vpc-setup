@@ -438,7 +438,7 @@ Outputs:
     Export:
       Name: !Sub "${AWS::StackName}-VPCV6CIDR"
   PublicSubnets:
-    Description: Comma seperated list of all created public PublicSubnets
+    Description: Comma seperated list of all created public subnets
     Value: !Join
       - ","
       -
@@ -451,7 +451,7 @@ Outputs:
     Export:
       Name: !Sub "${AWS::StackName}-PublicSubnets"
   PrivateSubnets:
-    Description: Comma seperated list of all created public PrivateSubnets
+    Description: Comma seperated list of all created private subnets
     Value: !Join
       - ","
       -
