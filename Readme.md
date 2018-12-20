@@ -31,6 +31,9 @@ via CLI:
 | Variable | Description |
 | --- | --- |
 | `${AWS::StackName}-VPCID` | A reference to the created VPC |
+| `${AWS::StackName}-VPCCIDR` | VPC CIDR Blocks |
+| `${AWS::StackName}-VPCV6CIDR` | VPC IPv6 CIDR Blocks |
+| `${AWS::StackName}-TagParse` | ServiceToken of the Lambda funtion to parse tags from Parameters |
 | `AZ[1-6]PrivateSubnet` | AZ[1-6] Private Subnet |
 | `AZ[1-6]PublicSubnet` | AZ[1-6] Public Subnet |
 | `${AWS::StackName}-PrivateSubnets` | Comma seperated list of all created private subnets |

@@ -428,7 +428,7 @@ Outputs:
     Export:
       Name: !Sub "${AWS::StackName}-VPCID"
   VPCCIDR:
-    Description: VPC CIDR Blocks
+    Description: VPC CIDR Block
     Value: !Ref VpcCIDR
     Export:
       Name: !Sub "${AWS::StackName}-VPCCIDR"
@@ -437,6 +437,17 @@ Outputs:
     Value: !Select [0, !GetAtt 'VPC.Ipv6CidrBlocks']
     Export:
       Name: !Sub "${AWS::StackName}-VPCV6CIDR"
+  TagParser:
+    Description: ServiceToken of the Lambda funtion to parse tags from Parameters
+    Value: !Join
+      - ":"
+      - - "arn:aws:lambda"
+        - !Ref AWS::Region
+        - !Ref AWS::AccountId
+        - "function"
+        - !Ref LambdaTagParser
+    Export:
+      Name: !Sub "${AWS::StackName}-TagParser"
   PublicSubnets:
     Description: Comma seperated list of all created public subnets
     Value: !Join
