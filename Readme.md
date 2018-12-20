@@ -6,14 +6,14 @@ These are Cloudformation templates to create an VPC Infrastructure with:
 * private and public subnets
 * optional bastion host
 * IPv6 support
-* exported to S3 to have it directly usable:<br/>[![Launch Stack](assets/launch-stack.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=infrastructure&templateURL=https%3A%2F%2Fs3.ca-central-1.amazonaws.com%2Fdentalwings-cloudformation-templates%2Faws-cloudformation-vpc-setup%2Fcloudformation_az_creation.yml)
+* exported to S3 to have it directly usable:<br/>[![Launch Stack](assets/launch-stack.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=infrastructure&templateURL=https%3A%2F%2Fs3.ca-central-1.amazonaws.com%2Fdentalwings-cloudformation-templates%2Faws-cloudformation-vpc-setup%2Fcloudformation_vpc_creation.yml)
 
 via CLI:
 
     aws cloudformation create-stack \
       --capabilities CAPABILITY_IAM \
       --stack-name infrastructure \
-      --template-url https://s3.ca-central-1.amazonaws.com/dentalwings-cloudformation-templates/aws-cloudformation-vpc-setup/cloudformation_az_creation.yml
+      --template-url https://s3.ca-central-1.amazonaws.com/dentalwings-cloudformation-templates/aws-cloudformation-vpc-setup/cloudformation_vpc_creation.yml
 
 ## Parameters
 

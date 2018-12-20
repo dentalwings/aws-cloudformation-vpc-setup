@@ -475,6 +475,18 @@ Outputs:
     Value: !GetAtt AZ1.Outputs.PublicSubnet
     Export:
       Name: !Sub "${AWS::StackName}-AZ1-PublicSubnet"
+  AZ2PrivateSubnet:
+    Description: AZ2 Private Subnet
+    Condition: Create2ndSubnet
+    Value: !GetAtt AZ2.Outputs.PrivateSubnet
+    Export:
+      Name: !Sub "${AWS::StackName}-AZ2-PrivateSubnet"
+  AZ2PublicSubnet:
+    Description: AZ2 Public Subnet
+    Condition: Create2ndSubnet
+    Value: !GetAtt AZ2.Outputs.PublicSubnet
+    Export:
+      Name: !Sub "${AWS::StackName}-AZ2-PublicSubnet"
   AZ3PrivateSubnet:
     Description: AZ3 Private Subnet
     Condition: Create3rdSubnet
