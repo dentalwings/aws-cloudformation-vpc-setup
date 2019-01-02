@@ -297,6 +297,71 @@ Resources:
             Action:
             - sts:AssumeRole
 
+  LambdaTagParserAutoScalingGroup:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.main
+      Role:
+        Fn::GetAtt:
+          - LambdaExecutionRole
+          - Arn
+      Runtime: nodejs6.10
+      Code:
+        ZipFile: |
+              exports.main = (event, context, callback) => {
+                  let keyPairString = event.ResourceProperties.data;
+                  let keyPairs = keyPairString.split(',').map( item => ({ Key: item.split('=')[0], Value: item.split('=')[1], PropagateAtLaunch: "true"}));
+
+                 sendResponse(event,context,"SUCCESS", { result: keyPairs });
+              };
+
+              function sendResponse(event, context, status, data, err) {
+                 var reason = err ? err.message : '';
+                 var responseBody = {
+                   StackId: event.StackId,
+                   RequestId: event.RequestId,
+                   LogicalResourceId: event.LogicalResourceId,
+                   PhysicalResourceId: 'tagparser-' + JSON.stringify(event.ResourceProperties.data),
+                   Status: status,
+                   Data: data
+                 };
+                 console.log("RESPONSE:\n", JSON.stringify(responseBody));
+                 var json = JSON.stringify(responseBody);
+
+                 var https = require("https");
+                 var url = require("url");
+
+                 var parsedUrl = url.parse(event.ResponseURL);
+                 var options = {
+                     hostname: parsedUrl.hostname,
+                     port: 443,
+                     path: parsedUrl.path,
+                     method: "PUT",
+                     headers: {
+                       "content-type": "",
+                       "content-length": json.length
+                     }
+                   };
+
+                 var request = https.request(options, function(response) {
+                     console.log("STATUS: " + response.statusCode);
+                     console.log("HEADERS: " + JSON.stringify(response.headers));
+                     context.done(null, data);
+                   });
+
+                   request.on("error", function(error) {
+                     console.log("sendResponse Error:\n", error);
+                     context.done(error);
+                   });
+
+                   request.on("end", function() {
+                     console.log("end");
+                   });
+                   request.write(json);
+                   request.end();
+              }
+
+
   LambdaTagParser:
     Type: AWS::Lambda::Function
     Properties:
@@ -447,6 +512,17 @@ Outputs:
         - !Ref LambdaTagParser
     Export:
       Name: !Sub "${AWS::StackName}-TagParser"
+  TagParserASG:
+    Description: ServiceToken of the Lambda funtion to parse tags from Parameters
+    Value: !Join
+      - ":"
+      - - "arn:aws:lambda"
+        - !Ref AWS::Region
+        - !Ref AWS::AccountId
+        - "function"
+        - !Ref LambdaTagParserAutoScalingGroup
+    Export:
+      Name: !Sub "${AWS::StackName}-TagParserASG"
   PublicSubnets:
     Description: Comma seperated list of all created public subnets
     Value: !Join
