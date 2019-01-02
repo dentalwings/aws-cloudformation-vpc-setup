@@ -162,7 +162,7 @@ Resources:
   AZ1:
     Type: AWS::CloudFormation::Stack
     Condition: Create1stSubnet
-    DependsOn: InternetGatewayAttachment
+    DependsOn: [ InternetGatewayAttachment, IPv6CidrBlock ]
     Properties:
       TemplateURL: https://s3.ca-central-1.amazonaws.com/dentalwings-cloudformation-templates/aws-cloudformation-vpc-setup/cloudformation_az_creation.yml
       Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
@@ -180,7 +180,7 @@ Resources:
   AZ2:
     Type: AWS::CloudFormation::Stack
     Condition: Create2ndSubnet
-    DependsOn: InternetGatewayAttachment
+    DependsOn: [ InternetGatewayAttachment, IPv6CidrBlock ]
     Properties:
       TemplateURL: https://s3.ca-central-1.amazonaws.com/dentalwings-cloudformation-templates/aws-cloudformation-vpc-setup/cloudformation_az_creation.yml
       Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
@@ -198,7 +198,7 @@ Resources:
   AZ3:
     Type: AWS::CloudFormation::Stack
     Condition: Create3rdSubnet
-    DependsOn: InternetGatewayAttachment
+    DependsOn: [ InternetGatewayAttachment, IPv6CidrBlock ]
     Properties:
       TemplateURL: https://s3.ca-central-1.amazonaws.com/dentalwings-cloudformation-templates/aws-cloudformation-vpc-setup/cloudformation_az_creation.yml
       Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
@@ -216,7 +216,7 @@ Resources:
   AZ4:
     Type: AWS::CloudFormation::Stack
     Condition: Create4thSubnet
-    DependsOn: InternetGatewayAttachment
+    DependsOn: [ InternetGatewayAttachment, IPv6CidrBlock ]
     Properties:
       TemplateURL: https://s3.ca-central-1.amazonaws.com/dentalwings-cloudformation-templates/aws-cloudformation-vpc-setup/cloudformation_az_creation.yml
       Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
@@ -234,7 +234,7 @@ Resources:
   AZ5:
     Type: AWS::CloudFormation::Stack
     Condition: Create5thSubnet
-    DependsOn: InternetGatewayAttachment
+    DependsOn: [ InternetGatewayAttachment, IPv6CidrBlock ]
     Properties:
       TemplateURL: https://s3.ca-central-1.amazonaws.com/dentalwings-cloudformation-templates/aws-cloudformation-vpc-setup/cloudformation_az_creation.yml
       Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
@@ -252,7 +252,7 @@ Resources:
   AZ6:
     Type: AWS::CloudFormation::Stack
     Condition: Create6thSubnet
-    DependsOn: InternetGatewayAttachment
+    DependsOn: [ InternetGatewayAttachment, IPv6CidrBlock ]
     Properties:
       TemplateURL: https://s3.ca-central-1.amazonaws.com/dentalwings-cloudformation-templates/aws-cloudformation-vpc-setup/cloudformation_az_creation.yml
       Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
