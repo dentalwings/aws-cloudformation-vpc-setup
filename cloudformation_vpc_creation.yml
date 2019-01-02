@@ -306,7 +306,6 @@ Resources:
           - LambdaExecutionRole
           - Arn
       Runtime: nodejs6.10
-      Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
       Code:
         ZipFile: |
               exports.main = (event, context, callback) => {
