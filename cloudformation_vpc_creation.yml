@@ -305,7 +305,7 @@ Resources:
         Fn::GetAtt:
           - LambdaExecutionRole
           - Arn
-      Runtime: nodejs6.10
+      Runtime: nodejs12.x
       Code:
         ZipFile: |
               exports.main = (event, context, callback) => {
@@ -370,7 +370,7 @@ Resources:
         Fn::GetAtt:
           - LambdaExecutionRole
           - Arn
-      Runtime: nodejs6.10
+      Runtime: nodejs12.x
       Code:
         ZipFile: |
               exports.main = (event, context, callback) => {
